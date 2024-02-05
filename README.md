@@ -1,2 +1,2 @@
-# alist-freebsd
-Automatically build alist (FreeBSD version)
+# synctv-freebsd
+Automatically build synctv (FreeBSD version)
