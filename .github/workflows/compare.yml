@@ -2,7 +2,7 @@ name: Run Tests
 
 on:
   schedule:
-    - cron: '0 16 */1 * *'
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
@@ -13,7 +13,7 @@ jobs:
       - name: compare versions
         run: |
           export REMOTEVERSION=$(wget -qO- https://api.github.com/repos/synctv-org/synctv/tags | gawk -F '["v]' '/name/{print "v"$5;exit}')
-          export LOCALVERSION=$(curl --location --silent --fail --show-error "https://api.github.com/repos/synctv-org/synctv/releases/latest" | grep -oP '"tag_name":\s*"\K[^"]+')
+          export LOCALVERSION=$(curl --location --silent --fail --show-error "https://api.github.com/repos/k0baya/synctv-freebsd/releases/latest" | grep -oP '"tag_name":\s*"\K[^"]+')
           bash compare.sh
           
       - name: Trigger release
@@ -23,8 +23,8 @@ jobs:
           github-token: ${{ secrets.PAT_TOKEN }}
           script: |
               await github.rest.actions.createWorkflowDispatch({
-              owner: 'synctv-org',
-              repo: 'synctv',
+              owner: 'k0baya',
+              repo: 'synctv-freebsd',
               workflow_id: 'build.yml',
               ref: 'main'
               })
