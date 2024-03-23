@@ -21,7 +21,7 @@ jobs:
           export LATEST_APP=$(wget -qO- https://api.github.com/repos/synctv-org/synctv/tags | gawk -F '["v]' '/name/{print "v"$5;exit}')
           git clone -b $LATEST_APP https://github.com/synctv-org/synctv
           cd synctv
-          bash script/build.sh -Mv "dev" -f "gcc -static" -F "g++ -static"
+          bash script/build.sh -M -f "gcc -static" -F "g++ -static" -p "freebsd"
           
     - name: Upload artifact
       uses: actions/upload-artifact@main
