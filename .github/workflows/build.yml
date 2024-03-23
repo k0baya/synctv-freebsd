@@ -28,7 +28,7 @@ jobs:
       with:
         name: synctv-freebsd
         path: |
-            synctv/build/synctv
+            synctv/build/synctv-freebsd-amd64
 
     - name: Generate release tag
       id: tag
@@ -41,7 +41,7 @@ jobs:
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         files: |
-              synctv/build/synctv
+              synctv/build/synctv-freebsd-amd64
               
     - name: Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
