@@ -21,14 +21,18 @@ jobs:
           export LATEST_APP=$(wget -qO- https://api.github.com/repos/synctv-org/synctv/tags | gawk -F '["v]' '/name/{print "v"$5;exit}')
           git clone -b $LATEST_APP https://github.com/synctv-org/synctv
           cd synctv
-          bash script/build.sh -M -f "gcc -static" -F "g++ -static" -p "freebsd"
+          wget https://github.com/synctv-org/synctv-web/releases/latest/download/dist.tar.gz && rm -rf public/dist && tar -xzvf dist.tar.gz -C public && rm -f dist.tar.gz && \
+          export WEBVERSION=$(git describe --tags | sed 's/^v//')
+          export VERSION=$(git describe --tags)
+          export GIT_COMMIT=$(git rev-parse --short HEAD)
+          GOOS=freebsd GOARCH=amd64 CC="cc" CXX="c++" AR="ar" CGO_LDFLAGS="-static" go build -o synctv -a -ldflags "-s -w -extldflags '-static' -X 'github.com/synctv-org/synctv/internal/version.WebVersion=${WEBVERSION}' -X 'github.com/synctv-org/synctv/internal/version.Version=${VERSION}' -X 'github.com/synctv-org/synctv/internal/version.GitCommit=${GIT_COMMIT}'" .
           
     - name: Upload artifact
       uses: actions/upload-artifact@main
       with:
-        name: synctv-freebsd
+        name: synctv-freebsd.zip
         path: |
-            synctv/build/synctv-freebsd-amd64
+            synctv/synctv
 
     - name: Generate release tag
       id: tag
@@ -41,7 +45,7 @@ jobs:
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         files: |
-              synctv/build/synctv-freebsd-amd64
+              synctv/synctv
               
     - name: Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
